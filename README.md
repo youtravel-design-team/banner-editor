@@ -19,7 +19,7 @@ Settings → Pages → Build and deployment → Source: **Deploy from a branch**
 Меняете файлы → коммит → push в `main`. Pages пересобирается сам.
 
 ## Шрифты и картинки
-- Шрифт — **Inter** (Google Fonts, SIL Open Font License). SF Pro в репозиторий не кладём: лицензия Apple не разрешает его распространение.
+- Шрифт — **Inter** (Google Fonts, SIL Open Font License). SF Pro в репозиторий не кладём.
 - `img/bg-paraglider.jpg` — Raimond Klavins, Unsplash (`xAqrT-279UA`); `img/fg-paraglider-full.webp` — вырезка из этого фото.
 - `img/logo-white.svg`, `img/logo-color.svg` — логотип YouTravel.me из DS 3.0 (Logos), обрезан по охранному полю.
 - `img/bg-maldives.jpg` — Shai Pal, Unsplash (`viJHpQoeHyU`).
