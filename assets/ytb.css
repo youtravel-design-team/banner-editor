@@ -13,6 +13,7 @@
      --title-scale — множитель размера заголовка (1 = по пресету)
    Цвета (необязательно, inline на баннере): --ytb-title, --ytb-sub, --ytb-plate-bg, --ytb-plate-color,
      --ytb-badge-bg, --ytb-badge-color, --ytb-sticker-bg, --ytb-sticker-color. Без них — цвета шаблона.
+   Логотип: <img class="ytb__logo"> + data-logo="tl|tr|br|bl" на баннере.
    Элементы: .ytb__badge, .ytb__title, .ytb__sub (.ytb__sub--plate), .ytb__sticker, .ytb__btn
    Все размеры внутри умножаются на --k (масштаб пресета: сайт = 1, соцсети ≈ 3.6).
    ========================================================================== */
@@ -30,7 +31,7 @@
   --pad-t: 24px; --pad-r: 24px; --pad-b: 40px; --pad-l: 24px;
   --gap: 12px;
   --title: 42px; --title-lh: .9; --title-ls: -0.01em;
-  --sub: 15px; --badge: 12px; --sticker: 68px;
+  --sub: 15px; --badge: 12px; --sticker: 68px; --logo: 22px;
   /* кнопка = размер M из DS 3.0, стиль Glass */
   --btn-h: 44px; --btn-px: 20px; --btn-fs: 15px; --btn-lh: 22px; --btn-ls: -0.24px; --btn-r: 9px; --btn-blur: 12px;
 
@@ -57,11 +58,11 @@
 /* ---------- пресеты размеров (значения в базовых px, умножаются на --k) ---------- */
 /* сайт */
 .ytb[data-size="276x416"]  { --w: 276px;  --h: 416px;  --k: 1;   --radius: 24px; --pad-t: 24px; --pad-r: 24px; --pad-b: 40px; --pad-l: 24px; --title: 42px; --sub: 15px; --badge: 12px; --gap: 12px; --sticker: 68px; }
-.ytb[data-size="876x224"]  { --w: 876px;  --h: 224px;  --k: 1;   --radius: 24px; --pad-t: 32px; --pad-r: 32px; --pad-b: 32px; --pad-l: 72px; --title: 55px; --sub: 18px; --badge: 14px; --gap: 14px; --sticker: 92px; }
+.ytb[data-size="876x224"]  { --w: 876px;  --h: 224px;  --k: 1;   --radius: 24px; --pad-t: 32px; --pad-r: 32px; --pad-b: 32px; --pad-l: 72px; --title: 55px; --sub: 18px; --badge: 14px; --gap: 14px; --sticker: 92px; --logo: 26px; }
 .ytb[data-size="876x224"][data-btn="left"] { --title: 48px; --sub: 17px; --gap: 12px; --pad-t: 24px; --pad-b: 24px; }
-.ytb[data-size="406x224"]  { --w: 406px;  --h: 224px;  --k: 1;   --radius: 20px; --pad-t: 24px; --pad-r: 24px; --pad-b: 24px; --pad-l: 24px; --title: 32px; --sub: 14px; --badge: 12px; --gap: 10px; --sticker: 60px; }
+.ytb[data-size="406x224"]  { --w: 406px;  --h: 224px;  --k: 1;   --radius: 20px; --pad-t: 24px; --pad-r: 24px; --pad-b: 24px; --pad-l: 24px; --title: 32px; --sub: 14px; --badge: 12px; --gap: 10px; --sticker: 60px; --logo: 20px; }
 .ytb[data-size="406x224"][data-btn="left"] { --title: 30px; --sub: 13px; --gap: 8px; --pad-t: 20px; --pad-b: 20px; }
-.ytb[data-size="426x156"]  { --w: 426px;  --h: 156px;  --k: 1;   --radius: 16px; --pad-t: 20px; --pad-r: 20px; --pad-b: 20px; --pad-l: 24px; --title: 30px; --sub: 13px; --badge: 11px; --gap: 8px;  --sticker: 52px;
+.ytb[data-size="426x156"]  { --w: 426px;  --h: 156px;  --k: 1;   --radius: 16px; --pad-t: 20px; --pad-r: 20px; --pad-b: 20px; --pad-l: 24px; --title: 30px; --sub: 13px; --badge: 11px; --gap: 8px;  --sticker: 52px; --logo: 18px;
   /* кнопка S из DS 3.0 */
   --btn-h: 40px; --btn-px: 16px; --btn-fs: 14px; --btn-lh: 18px; --btn-ls: -0.224px; --btn-r: 8px; }
 .ytb[data-size="426x156"][data-btn="left"] { --title: 26px; --gap: 6px; --pad-t: 16px; --pad-b: 16px; }
@@ -223,5 +224,20 @@
 /* слева: текст и кнопка стопкой слева */
 .ytb[data-btn="left"] .ytb__content { grid-template-rows: 1fr auto; justify-items: start; }
 .ytb[data-btn="left"] .ytb__text { justify-content: center; }
+
+/* ---------- логотип (DS 3.0, Logos) ----------
+   data-logo="tl|tr|br|bl" на баннере — угол; контент сдвигается, чтобы не пересекаться */
+.ytb { --lg: calc((var(--logo) + var(--gap)) * var(--k)); }
+.ytb__logo { position: absolute; z-index: 6; display: block; width: auto; height: calc(var(--logo) * var(--k)); pointer-events: none; }
+.ytb[data-logo="tl"] .ytb__logo { top: calc(var(--pad-t) * var(--k) * .75); left: calc(var(--pad-l) * var(--k)); }
+.ytb[data-logo="tr"] .ytb__logo { top: calc(var(--pad-t) * var(--k) * .75); right: calc(var(--pad-r) * var(--k)); }
+.ytb[data-logo="br"] .ytb__logo { bottom: calc(var(--pad-b) * var(--k) * .6); right: calc(var(--pad-r) * var(--k)); }
+.ytb[data-logo="bl"] .ytb__logo { bottom: calc(var(--pad-b) * var(--k) * .6); left: calc(var(--pad-l) * var(--k)); }
+.ytb[data-logo="tl"] .ytb__content,
+.ytb[data-logo="tr"][data-btn="bottom"] .ytb__content { padding-top: calc(var(--pad-t) * var(--k) * .75 + var(--lg)); }
+.ytb[data-logo="bl"] .ytb__content,
+.ytb[data-logo="br"]:not([data-btn="left"]) .ytb__content { padding-bottom: calc(var(--pad-b) * var(--k) * .6 + var(--lg)); }
+.ytb[data-logo="tr"] .ytb__sticker { top: calc(var(--pad-t) * var(--k) * .75 + var(--lg)); }
+.ytb[data-btn="none"] .ytb__logo { display: none; }
 
 @media (prefers-reduced-motion: reduce) { .ytb__btn { transition: none; } }

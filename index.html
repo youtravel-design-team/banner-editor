@@ -64,6 +64,9 @@
   .slider input { width: 100%; accent-color: var(--acc); }
   .slider output { text-align: right; font-variant-numeric: tabular-nums; }
   .slider.sz { grid-template-columns: auto 1fr 40px; }
+  .seg--wrap { flex-wrap: wrap; }
+  .seg--wrap button { flex: 1 0 calc(50% - 3px); }
+  .seg--wrap button:first-child { flex-basis: 100%; }
   .var__btns { display: flex; flex-wrap: wrap; gap: 6px; }
   .drop { display: grid; place-items: center; gap: 4px; text-align: center; padding: 14px; border: 1.5px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 12px; cursor: pointer; }
   .drop:hover, body.dragging .drop { border-color: var(--acc); color: var(--ink); background: var(--acc-soft); }
@@ -183,7 +186,7 @@
       <div class="tpanel" data-panel="tours">
         <section class="el">
           <div class="el__head"><h2>Заголовок</h2></div>
-          <label class="f">Текст · «|» — перенос в вертикальных<input type="text" id="tours-title" data-f="title"></label>
+          <label class="f">Текст · «|» — перенос в вертикальных и 1920×1080<input type="text" id="tours-title" data-f="title"></label>
           <label class="slider sz"><span>Размер</span><input type="range" min="0.6" max="1.6" step="0.05" data-r="titleScale" aria-label="Размер заголовка"><output></output></label>
           <div class="colors" data-colors="title"></div>
         </section>
@@ -221,6 +224,12 @@
             <p class="note">«Авто» — размер по пресету: M на сайте, S на 426×156. Положение меняется у горизонтальных форматов. Без кнопки весь баннер остаётся ссылкой.</p>
           </div>
         </section>
+        <section class="el">
+          <div class="el__head"><h2>Логотип</h2></div>
+          <div class="seg seg--wrap" data-key="logo"><button type="button" data-v="">Без логотипа</button><button type="button" data-v="tl">↖ Сверху слева</button><button type="button" data-v="tr">↗ Сверху справа</button><button type="button" data-v="br">↘ Снизу справа</button><button type="button" data-v="bl">↙ Снизу слева</button></div>
+          <div class="seg" data-key="logoTone"><button type="button" data-v="white">Белый</button><button type="button" data-v="color">Цветной</button></div>
+          <p class="note">Логотип из DS 3.0, не перекрашивается. Белый — на фото и цветном фоне, цветной — только на светлом фоне. Текст и кнопка сдвигаются, чтобы не пересекаться с логотипом.</p>
+        </section>
       </div>
 
       <!-- ===== Шаблон TopSort ===== -->
@@ -252,6 +261,12 @@
             <label class="f">Текст<input type="text" data-f="note"></label>
             <div class="colors" data-colors="note"></div>
           </div>
+        </section>
+        <section class="el">
+          <div class="el__head"><h2>Логотип</h2></div>
+          <div class="seg seg--wrap" data-key="logo"><button type="button" data-v="">Без логотипа</button><button type="button" data-v="tl">↖ Сверху слева</button><button type="button" data-v="tr">↗ Сверху справа</button><button type="button" data-v="br">↘ Снизу справа</button></div>
+          <div class="seg" data-key="logoTone"><button type="button" data-v="white">Белый</button><button type="button" data-v="color">Цветной</button></div>
+          <p class="note">Логотип из DS 3.0, не перекрашивается. Белый — на фото и цветном фоне, цветной — только на светлом фоне. Справа сверху логотип встаёт рядом с маркировкой «Реклама».</p>
         </section>
       </div>
       <p class="note">Цвета: HEX можно ввести вручную; серым — цвет шаблона. Точки — готовая палитра, радужный квадрат — любой цвет, «сброс» — вернуть шаблон.</p>
@@ -319,7 +334,7 @@
         { id: '750x774', g: 'social', btn: 'bottom' },
         { id: '600x500', g: 'ads', btn: 'left' },
         { id: '540x300', g: 'ads', btn: 'left', alt: 1 },
-        { id: '1920x1080', g: 'ads', btn: 'left', alt: 1 }
+        { id: '1920x1080', g: 'ads', btn: 'left', alt: 1, brk: 1 }
       ],
       groups: { site: 'Сайт', social: 'Соцсети', ads: 'Реклама' },
       defSizes: ['276x416', '876x224', '406x224', '426x156', '1080x1080', '600x500'],
@@ -333,7 +348,7 @@
       sliders: [['fx', 'Фокус X', 0, 1], ['fy', 'Фокус Y', 0, 1], ['zoom', 'Зум', 1, 2.5], ['dim', 'Затемнение', 0, .6]],
       allowFg: true,
       vals: { title: 'Туры|месяца', sub: 'Авторские туры со скидкой до 30%', badge: 'Только в ноябре', sticker: '−30%|до 30.11', btn: 'Выбрать тур', href: 'https://youtravel.me/', imgBase: 'img/', showSub: false, showBadge: false, showSticker: false, depth: true, showBtn: true, hoverPreview: false, titleScale: 1 },
-      state: { subStyle: 'plain', badgeTone: '', stickerTone: '', wideBtn: '', btnSize: '' },
+      state: { subStyle: 'plain', badgeTone: '', stickerTone: '', wideBtn: '', btnSize: '', logo: '', logoTone: 'white' },
       swatches: DS_COLORS,
       colorItems: function (T, el) {
         if (el === 'title') return [['title', 'Цвет текста']];
@@ -353,9 +368,9 @@
       markup: function (T, s, va, src, e) {
         var V = T.vals, st = T.state, btn = this.btnPos(T, s), i = '  ', o = [];
         var depth = V.depth && !!src.fg;
-        var title = esc(typo(V.title)).split('|').join(btn === 'bottom' ? '<br>' : ' ');
+        var title = esc(typo(V.title)).split('|').join(btn === 'bottom' || s.brk ? '<br>' : ' ');
         var style = '--ar:' + r3(va.ar) + ';--fx:' + r3(e.fx) + ';--fy:' + r3(e.fy) + ';--zoom:' + r3(e.zoom) + ';--dim:' + r3(va.dim || 0) + (V.titleScale && V.titleScale !== 1 ? ';--title-scale:' + r3(V.titleScale) : '') + colorStyle(T);
-        o.push('<a class="ytb" data-size="' + s.id + '" data-btn="' + btn + '" data-depth="' + (depth ? 'on' : 'off') + '" style="' + style + '" href="' + esc(V.href) + '">');
+        o.push('<a class="ytb" data-size="' + s.id + '" data-btn="' + btn + '" data-depth="' + (depth ? 'on' : 'off') + '"' + (st.logo && btn !== 'none' ? ' data-logo="' + st.logo + '"' : '') + ' style="' + style + '" href="' + esc(V.href) + '">');
         o.push(i + '<div class="ytb__layer ytb__layer--bg"><img src="' + esc(src.bg) + '" alt=""></div>');
         o.push(i + '<div class="ytb__shade"></div>');
         if (src.fg) o.push(i + '<div class="ytb__layer ytb__layer--fg"><img src="' + esc(src.fg) + '" alt=""></div>');
@@ -372,6 +387,7 @@
             var sk = esc(V.sticker).split('|');
             o.push(i + '<span class="ytb__sticker' + (st.stickerTone ? ' ytb__sticker--' + st.stickerTone : '') + '">' + sk[0] + (sk[1] ? '<small>' + sk[1] + '</small>' : '') + '</span>');
           }
+          if (st.logo) o.push(i + '<img class="ytb__logo" src="' + esc(src.logo) + '" alt="YouTravel.me">');
         }
         o.push('</a>');
         return o.join('\n');
@@ -390,6 +406,7 @@
         api.layer('.ytb__layer--fg img');
         if (!depth) api.drawEl(title);
         ['.ytb__badge', '.ytb__sub', '.ytb__btn', '.ytb__sticker'].forEach(function (q) { api.drawEl(el.querySelector(q)); });
+        api.img('.ytb__logo');
       },
       emptyArt: '<i style="width:46px;height:70px"></i><i style="width:132px;height:34px"></i><i style="width:70px;height:70px"></i>',
       emptyText: 'Каждое фото станет вариантом во всех выбранных размерах — от 48×48 до 1920×1080. Подойдут свои генерации и фото с бесплатной лицензией: Unsplash, Pexels.'
@@ -410,7 +427,7 @@
       sliders: [['fx', 'Фокус X', 0, 1], ['fy', 'Фокус Y', 0, 1], ['zoom', 'Зум', 1, 2.5]],
       allowFg: false,
       vals: { title: 'Улетные Мальдивы', price: 'от 145 000 ₽', details: '4 острова|8 дней|все включено*', showDetails: true, btn: 'Смотреть тур', note: '*кроме авиаперелёта', showNote: true, href: 'https://youtravel.me/', imgBase: 'img/', hoverPreview: false, titleScale: 1 },
-      state: {},
+      state: { logo: '', logoTone: 'white' },
       swatches: DS_COLORS,
       colorItems: function (T, el) {
         if (el === 'offer') return [['ink', 'Цвет текста']];
@@ -424,7 +441,8 @@
         var V = T.vals, i = '  ', o = [];
         var style = '--ar:' + r3(va.ar) + ';--fx:' + r3(e.fx) + ';--fy:' + r3(e.fy) + ';--zoom:' + r3(e.zoom) + ';--tint:' + (normHex(va.tint) || '#07505a') + (V.titleScale && V.titleScale !== 1 ? ';--ts-title-scale:' + r3(V.titleScale) : '') + colorStyle(T);
         var dot = '<i class="tsb__dot"></i>';
-        o.push('<a class="tsb" data-size="' + s.id + '" style="' + style + '" href="' + esc(V.href) + '">');
+        var lg = T.state.logo, logo = lg ? '<img class="tsb__logo' + (lg !== 'tr' ? ' tsb__logo--' + lg : '') + '" src="' + esc(src.logo) + '" alt="YouTravel.me">' : '';
+        o.push('<a class="tsb" data-size="' + s.id + '"' + (lg ? ' data-logo="' + lg + '"' : '') + ' style="' + style + '" href="' + esc(V.href) + '">');
         o.push(i + '<div class="tsb__photo"><div class="tsb__layer"><img src="' + esc(src.bg) + '" alt=""></div></div>');
         o.push(i + '<div class="tsb__tint"></div>');
         o.push(i + '<div class="tsb__content">');
@@ -440,7 +458,8 @@
         o.push(i + i + '</div>');
         if (V.showNote) o.push(i + i + '<p class="tsb__note">' + esc(typo(V.note)) + '</p>');
         o.push(i + '</div>');
-        o.push(i + '<span class="tsb__mark">Реклама</span>');
+        o.push(i + '<div class="tsb__tr">' + (lg === 'tr' ? logo : '') + '<span class="tsb__mark">Реклама</span></div>');
+        if (lg && lg !== 'tr') o.push(i + logo);
         o.push('</a>');
         return o.join('\n');
       },
@@ -459,6 +478,7 @@
         }
         ctx.fillStyle = g; ctx.fillRect(r.x, r.y, r.w, r.h);
         ['.tsb__offer', '.tsb__chip', '.tsb__btn', '.tsb__note', '.tsb__mark'].forEach(function (q) { api.drawEl(el.querySelector(q)); });
+        api.img('.tsb__logo');
       },
       varExtra: true,
       emptyArt: '<i style="width:150px;height:19px"></i><i style="width:44px;height:24px"></i>',
@@ -688,8 +708,9 @@
   function eff(va, sid) { return Object.assign({ fx: va.fx, fy: va.fy, zoom: va.zoom }, (va.over || {})[sid] || {}); }
   function srcFor(t, va, mode) {
     if (mode && typeof mode === 'object') return mode;
-    if (mode === 'code') { var base = t.vals.imgBase || 'img/'; return { bg: base + va.file, fg: va.fgFile ? base + va.fgFile : null }; }
-    return { bg: urls[va.id].bg, fg: va.fgFile ? urls[va.id].fg : null };
+    var lf = 'logo-' + (t.state.logoTone === 'color' ? 'color' : 'white') + '.svg';
+    if (mode === 'code') { var base = t.vals.imgBase || 'img/'; return { bg: base + va.file, fg: va.fgFile ? base + va.fgFile : null, logo: base + lf }; }
+    return { bg: urls[va.id].bg, fg: va.fgFile ? urls[va.id].fg : null, logo: 'img/' + lf };
   }
   function markup(s, va, mode) { var t = T(); return t.markup(t, s, va, srcFor(t, va, mode), eff(va, s.id)); }
   function fname(s, va) { return T().prefix + '-' + s.id + '-' + slug(va.name); }
@@ -828,7 +849,7 @@
   function openCode(s, va) {
     var t = T();
     codeText = '<!-- Стили один раз на странице: ' + t.css + ' (шрифт Inter подключается из CSS) -->\n' +
-      '<!-- Картинки: ' + va.file + (va.fgFile ? ', ' + va.fgFile : '') + ' — положите в папку из поля «Адрес папки с картинками» -->\n' + markup(s, va, 'code');
+      '<!-- Картинки: ' + va.file + (va.fgFile ? ', ' + va.fgFile : '') + (t.state.logo ? ', logo-' + (t.state.logoTone === 'color' ? 'color' : 'white') + '.svg' : '') + ' — положите в папку из поля «Адрес папки с картинками» -->\n' + markup(s, va, 'code');
     v('codeTitle').textContent = t.name + ' · ' + s.id.replace('x', '×') + ' · ' + va.name;
     v('codePre').textContent = codeText;
     try { v('codeDlg').showModal(); } catch (e) { v('codeDlg').setAttribute('open', ''); }
@@ -968,7 +989,11 @@
       ctx.restore();
       node.style.transform = prev;
     }
-    T().paint({ el: el, ctx: ctx, W: W, H: H, rel: rel, layer: layer, drawEl: drawEl, isTransparent: isTransparent });
+    function img(sel) {
+      var im = el.querySelector(sel); if (!im || !im.getClientRects().length || !im.naturalWidth) return;
+      var r = rel(im.getBoundingClientRect()); ctx.drawImage(im, r.x, r.y, r.w, r.h);
+    }
+    T().paint({ el: el, ctx: ctx, W: W, H: H, rel: rel, layer: layer, drawEl: drawEl, img: img, isTransparent: isTransparent });
     ctx.restore();
     return new Promise(function (res, rej) { cv.toBlob(function (b) { b ? res(b) : rej({ message: 'пустой кадр' }); }, 'image/png'); });
   }
@@ -988,7 +1013,7 @@
   }
   async function buildStandalone(s, va) {
     var t = T(), css = await inlineCSS(t.css), u = urls[va.id];
-    var src = { bg: await toDataURL(u.bg), fg: va.fgFile && u.fg ? await toDataURL(u.fg) : null };
+    var src = { bg: await toDataURL(u.bg), fg: va.fgFile && u.fg ? await toDataURL(u.fg) : null, logo: await toDataURL('img/logo-' + (t.state.logoTone === 'color' ? 'color' : 'white') + '.svg') };
     return '<!DOCTYPE html>\n<html lang="ru">\n<head>\n<meta charset="utf-8">\n<meta name="viewport" content="width=device-width, initial-scale=1">\n' +
       '<meta name="ad.size" content="width=' + s.w + ',height=' + s.h + '">\n<title>YouTravel.me — ' + t.name + ' ' + s.w + '×' + s.h + '</title>\n' +
       '<style>\n' + css + '\nhtml,body{margin:0}body{display:grid;place-items:center;min-height:100vh;background:#f0f1f6}\n</style>\n</head>\n<body>\n' +
