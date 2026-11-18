@@ -1,0 +1,106 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+/* ==========================================================================
+   YouTravel.me — баннеры TopSort (по мастерам Figma «TopSort Banner Template»)
+   Размеры: data-size="1176x147" (десктоп) | "343x188" (мобильная версия)
+   Правила макета: меняются только фото, цвет фона и тексты; сетка и кнопка — как в мастере.
+   Переменные на баннере (inline style):
+     --tint            — цвет фона под текстом (по умолчанию #07505a)
+     --ar, --fx, --fy, --zoom — фото: пропорция, фокус 0…1, зум
+     --ts-ink          — цвет оффера (название и цена)
+     --ts-chip-bg, --ts-chip-color — плашка деталей
+     --ts-note         — сноска
+   ========================================================================== */
+
+
+.tsb {
+  --tint: #07505a;
+  --ar: 1.5; --fx: .5; --fy: .5; --zoom: 1;
+  --w: 1176px; --h: 147px; --photo-l: 491px;
+
+  position: relative;
+  display: block;
+  width: var(--w); height: var(--h);
+  overflow: hidden;
+  border-radius: 12px;
+  background: var(--tint);
+  color: var(--ts-ink, #fefefe);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 600;
+  line-height: normal;
+  text-decoration: none;
+  isolation: isolate;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+.tsb *, .tsb *::before, .tsb *::after { box-sizing: border-box; }
+.tsb[data-size="1176x147"] { --w: 1176px; --h: 147px; --photo-l: 491px; }
+.tsb[data-size="343x188"]  { --w: 343px;  --h: 188px; --photo-l: 105px; }
+
+/* фото: правая часть баннера, «cover» с фокусом и зумом */
+.tsb__photo {
+  position: absolute; z-index: 0; top: 0; bottom: 0; right: 0; left: var(--photo-l);
+  overflow: hidden;
+  --rw: calc(var(--w) - var(--photo-l)); --rh: var(--h);
+  --sw: calc(max(var(--rw), var(--rh) * var(--ar)) * var(--zoom));
+  --sh: calc(var(--sw) / var(--ar));
+}
+.tsb__layer {
+  position: absolute;
+  left: calc((var(--rw) - var(--sw)) * var(--fx));
+  top: calc((var(--rh) - var(--sh)) * var(--fy));
+  width: var(--sw); height: var(--sh);
+  pointer-events: none;
+}
+.tsb__layer img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; }
+
+/* цвет фона под текстом с переходом в фото */
+.tsb__tint { position: absolute; z-index: 1; top: 0; bottom: 0; left: 0; width: 800px; pointer-events: none;
+  background: linear-gradient(90deg, var(--tint) 63.462%, transparent 100%); }
+.tsb[data-size="343x188"] .tsb__tint { width: 100%;
+  background: linear-gradient(270deg, transparent 0%, color-mix(in srgb, var(--tint) 10%, transparent) 29%, color-mix(in srgb, var(--tint) 97%, transparent) 49%, var(--tint) 62%); }
+
+/* контент */
+.tsb__content { position: absolute; z-index: 2; left: 33px; top: 0; bottom: 0; width: 437px;
+  display: flex; flex-direction: column; justify-content: center; gap: 2px; }
+.tsb__main { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
+.tsb__offer { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
+.tsb__title { font-size: 28px; letter-spacing: -0.56px; }
+.tsb__price { font-size: 24px; letter-spacing: -0.48px; }
+.tsb__dot { display: block; flex: none; width: 4px; height: 4px; border-radius: 50px; background: currentColor; }
+.tsb__row { display: flex; align-items: center; gap: 12px; width: 100%; }
+.tsb__chip { display: inline-flex; align-items: center; justify-content: center; gap: 8px; flex: none;
+  padding: 6px 12px; border-radius: 30px;
+  background: var(--ts-chip-bg, color-mix(in srgb, var(--tint), #ffffff 8%));
+  color: var(--ts-chip-color, #fefefe);
+  font-size: 14px; letter-spacing: -0.28px; white-space: nowrap; }
+.tsb__chip .tsb__dot { background: currentColor; }
+/* кнопка — как в мастере, не меняется */
+.tsb__btn { flex: 1 1 0; min-width: 0; height: 36px; display: flex; align-items: center; justify-content: center;
+  padding: 0 12px; background: #ffffff; border: 1px solid #dbdfe9; border-radius: 8px;
+  color: #242a37; font-size: 13px; line-height: 17px; letter-spacing: -0.208px; white-space: nowrap;
+  transition: background-color .15s ease-out, border-color .15s ease-out; }
+/* состояния кнопки — как у .ytme-button_theme-white из DS 3.0 */
+.tsb:hover .tsb__btn, .tsb:focus-visible .tsb__btn, .tsb.is-hover .tsb__btn { background: #f6f7fa; }
+.tsb:active .tsb__btn { background: #f6f7fa; border-color: #242a37; transition: none; }
+.tsb:focus-visible { outline: 2px solid #242a37; outline-offset: 2px; }
+@media (prefers-reduced-motion: reduce) { .tsb__btn { transition: none; } }
+.tsb__note { margin: 0; font-size: 11px; letter-spacing: -0.22px; color: var(--ts-note, #d5dae5); white-space: nowrap; }
+/* маркировка рекламы */
+.tsb__mark { position: absolute; z-index: 3; top: 10px; right: 10px; padding: 4px 8px; border-radius: 30px;
+  background: color-mix(in srgb, var(--tint) 10%, transparent);
+  -webkit-backdrop-filter: blur(4.5px); backdrop-filter: blur(4.5px);
+  color: #fefefe; font-size: 11px; letter-spacing: -0.22px; }
+
+/* мобильная версия 343×188 */
+.tsb[data-size="343x188"] .tsb__content { left: 16px; width: 311px; gap: 8px; }
+.tsb[data-size="343x188"] .tsb__main { gap: 10px; }
+.tsb[data-size="343x188"] .tsb__offer { flex-direction: column; align-items: flex-start; gap: 0; white-space: normal; }
+.tsb[data-size="343x188"] .tsb__offer > .tsb__dot { display: none; }
+.tsb[data-size="343x188"] .tsb__title { font-size: 17px; letter-spacing: -0.34px; max-width: 190px; }
+.tsb[data-size="343x188"] .tsb__price { font-size: 18px; letter-spacing: -0.36px; max-width: 190px; }
+.tsb[data-size="343x188"] .tsb__row { flex-direction: column; align-items: flex-start; gap: 10px; }
+.tsb[data-size="343x188"] .tsb__chip { gap: 5px; padding: 5px 8px; font-size: 10px; letter-spacing: -0.2px; }
+.tsb[data-size="343x188"] .tsb__chip .tsb__dot { width: 3px; height: 3px; }
+.tsb[data-size="343x188"] .tsb__btn { flex: none; width: 190px; }
+.tsb[data-size="343x188"] .tsb__note { font-size: 10px; letter-spacing: -0.2px; }
+.tsb[data-size="343x188"] .tsb__mark { top: 11px; font-size: 10px; letter-spacing: -0.2px; }

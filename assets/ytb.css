@@ -1,0 +1,226 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+/* ==========================================================================
+   YouTravel.me — HTML-баннеры (шаблон)
+   Атрибуты баннера:
+     data-size   = "276x416" | "876x224" | ... (см. пресеты ниже)
+     data-btn    = "bottom" | "right" | "left" | "none"   — положение кнопки
+     data-depth  = "on" | "off"                           — заголовок за передним планом
+   Фото (inline-переменные на баннере):
+     --ar   — пропорция фото (ширина/высота), по умолчанию 1.5
+     --fx, --fy — фокус 0…1 (0 — левый/верхний край, 1 — правый/нижний)
+     --zoom — увеличение поверх «cover», по умолчанию 1
+     --dim  — затемнение фото 0…0.6
+   Цвета (необязательно, inline на баннере): --ytb-title, --ytb-sub, --ytb-plate-bg, --ytb-plate-color,
+     --ytb-badge-bg, --ytb-badge-color, --ytb-sticker-bg, --ytb-sticker-color. Без них — цвета шаблона.
+   Элементы: .ytb__badge, .ytb__title, .ytb__sub (.ytb__sub--plate), .ytb__sticker, .ytb__btn
+   Все размеры внутри умножаются на --k (масштаб пресета: сайт = 1, соцсети ≈ 3.6).
+   ========================================================================== */
+
+
+.ytb {
+  --ytb-font: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --ytb-font-text: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  --ytb-accent: #8600ef;
+  --ytb-on-accent: #fff;
+  --ytb-fallback-bg: #1d6f78;
+
+  --k: 1;
+  --w: 276px; --h: 416px; --radius: 24px;
+  --pad-t: 24px; --pad-r: 24px; --pad-b: 40px; --pad-l: 24px;
+  --gap: 12px;
+  --title: 42px; --title-lh: .9; --title-ls: -0.01em;
+  --sub: 15px; --badge: 12px; --sticker: 68px;
+  /* кнопка = размер M из DS 3.0, стиль Glass */
+  --btn-h: 44px; --btn-px: 20px; --btn-fs: 15px; --btn-lh: 22px; --btn-ls: -0.24px; --btn-r: 9px; --btn-blur: 12px;
+
+  /* фото: бокс «cover» с фокусом и зумом */
+  --ar: 1.5; --fx: .5; --fy: .5; --zoom: 1; --dim: 0;
+  --sw: calc(max(var(--w), var(--h) * var(--ar)) * var(--zoom));
+  --sh: calc(var(--sw) / var(--ar));
+
+  position: relative;
+  display: block;
+  width: var(--w); height: var(--h);
+  overflow: hidden;
+  border-radius: var(--radius);
+  background: var(--ytb-fallback-bg);
+  color: #fff;
+  text-decoration: none;
+  font-family: var(--ytb-font);
+  isolation: isolate;
+  -webkit-font-smoothing: antialiased;
+  box-sizing: border-box;
+}
+.ytb *, .ytb *::before, .ytb *::after { box-sizing: border-box; }
+
+/* ---------- пресеты размеров (значения в базовых px, умножаются на --k) ---------- */
+/* сайт */
+.ytb[data-size="276x416"]  { --w: 276px;  --h: 416px;  --k: 1;   --radius: 24px; --pad-t: 24px; --pad-r: 24px; --pad-b: 40px; --pad-l: 24px; --title: 42px; --sub: 15px; --badge: 12px; --gap: 12px; --sticker: 68px; }
+.ytb[data-size="876x224"]  { --w: 876px;  --h: 224px;  --k: 1;   --radius: 24px; --pad-t: 32px; --pad-r: 32px; --pad-b: 32px; --pad-l: 72px; --title: 55px; --sub: 18px; --badge: 14px; --gap: 14px; --sticker: 92px; }
+.ytb[data-size="876x224"][data-btn="left"] { --title: 48px; --sub: 17px; --gap: 12px; --pad-t: 24px; --pad-b: 24px; }
+.ytb[data-size="406x224"]  { --w: 406px;  --h: 224px;  --k: 1;   --radius: 20px; --pad-t: 24px; --pad-r: 24px; --pad-b: 24px; --pad-l: 24px; --title: 32px; --sub: 14px; --badge: 12px; --gap: 10px; --sticker: 60px; }
+.ytb[data-size="406x224"][data-btn="left"] { --title: 30px; --sub: 13px; --gap: 8px; --pad-t: 20px; --pad-b: 20px; }
+.ytb[data-size="426x156"]  { --w: 426px;  --h: 156px;  --k: 1;   --radius: 16px; --pad-t: 20px; --pad-r: 20px; --pad-b: 20px; --pad-l: 24px; --title: 30px; --sub: 13px; --badge: 11px; --gap: 8px;  --sticker: 52px;
+  /* кнопка S из DS 3.0 */
+  --btn-h: 40px; --btn-px: 16px; --btn-fs: 14px; --btn-lh: 18px; --btn-ls: -0.224px; --btn-r: 8px; }
+.ytb[data-size="426x156"][data-btn="left"] { --title: 26px; --gap: 6px; --pad-t: 16px; --pad-b: 16px; }
+.ytb[data-size="1440x400"] { --w: 1440px; --h: 400px;  --k: 1.5; --radius: 24px; --pad-t: 40px; --pad-r: 40px; --pad-b: 40px; --pad-l: 64px; --title: 52px; --sub: 18px; --badge: 14px; --gap: 14px; --sticker: 96px; }
+.ytb[data-size="48x48"]    { --w: 48px;   --h: 48px;   --k: 1;   --radius: 12px; }
+/* соцсети */
+.ytb[data-size="1080x1080"] { --w: 1080px; --h: 1080px; --k: 3.6; --radius: 0px; --pad-t: 24px; --pad-r: 24px; --pad-b: 28px; --pad-l: 24px; --title: 46px; --sub: 15px; --badge: 12px; --gap: 12px; --sticker: 72px; }
+.ytb[data-size="1080x1340"] { --w: 1080px; --h: 1340px; --k: 3.6; --radius: 0px; --pad-t: 28px; --pad-r: 24px; --pad-b: 32px; --pad-l: 24px; --title: 48px; --sub: 15px; --badge: 12px; --gap: 12px; --sticker: 72px; }
+.ytb[data-size="1080x1920"] { --w: 1080px; --h: 1920px; --k: 3.6; --radius: 0px; --pad-t: 40px; --pad-r: 24px; --pad-b: 56px; --pad-l: 24px; --title: 50px; --sub: 16px; --badge: 13px; --gap: 12px; --sticker: 76px; }
+.ytb[data-size="750x774"]   { --w: 750px;  --h: 774px;  --k: 2.6; --radius: 0px; --pad-t: 24px; --pad-r: 24px; --pad-b: 28px; --pad-l: 24px; --title: 44px; --sub: 15px; --badge: 12px; --gap: 12px; --sticker: 68px; }
+/* реклама */
+.ytb[data-size="600x500"]   { --w: 600px;  --h: 500px;  --k: 1.5; --radius: 0px; --pad-t: 28px; --pad-r: 28px; --pad-b: 28px; --pad-l: 32px; --title: 44px; --sub: 15px; --badge: 12px; --gap: 12px; --sticker: 72px; }
+.ytb[data-size="540x300"]   { --w: 540px;  --h: 300px;  --k: 1.2; --radius: 0px; --pad-t: 24px; --pad-r: 24px; --pad-b: 24px; --pad-l: 26px; --title: 36px; --sub: 14px; --badge: 12px; --gap: 10px; --sticker: 64px; }
+.ytb[data-size="1920x1080"] { --w: 1920px; --h: 1080px; --k: 3;   --radius: 0px; --pad-t: 36px; --pad-r: 36px; --pad-b: 40px; --pad-l: 48px; --title: 50px; --sub: 17px; --badge: 13px; --gap: 13px; --sticker: 88px; }
+
+/* ---------- слои фото ---------- */
+.ytb__layer {
+  position: absolute;
+  left: calc((var(--w) - var(--sw)) * var(--fx));
+  top: calc((var(--h) - var(--sh)) * var(--fy));
+  width: var(--sw); height: var(--sh);
+  pointer-events: none;
+}
+.ytb__layer img { position: absolute; inset: 0; display: block; width: 100%; height: 100%; max-width: none; }
+.ytb__layer--bg { z-index: 0; }
+.ytb__layer--fg { z-index: 3; display: none; }
+.ytb[data-depth="on"] .ytb__layer--fg { display: block; }
+
+/* затемнение для читаемости: равномерное (--dim) + градиент под раскладку */
+.ytb__shade { position: absolute; inset: 0; z-index: 1; pointer-events: none;
+  background-color: rgba(0, 0, 0, var(--dim));
+  background-image: linear-gradient(90deg, rgba(0,20,30,.22) 0%, rgba(0,20,30,0) 55%); }
+.ytb[data-btn="bottom"] .ytb__shade { background-image: linear-gradient(180deg, rgba(0,0,0,0) 55%, rgba(0,0,0,.18) 100%); }
+
+/* ---------- контент ----------
+   .ytb__content и .ytb__text без z-index — заголовок может встать
+   между фото и передним планом, остальное — поверх. */
+.ytb__content {
+  position: absolute; inset: 0;
+  padding: calc(var(--pad-t) * var(--k)) calc(var(--pad-r) * var(--k)) calc(var(--pad-b) * var(--k)) calc(var(--pad-l) * var(--k));
+  display: grid;
+  gap: calc(var(--gap) * var(--k));
+}
+.ytb[data-btn="none"] .ytb__content, .ytb[data-btn="none"] .ytb__sticker { display: none; }
+.ytb__text {
+  display: flex; flex-direction: column; align-items: flex-start; justify-content: center;
+  gap: calc(var(--gap) * var(--k) * .66);
+  min-width: 0;
+}
+
+.ytb__title {
+  position: relative; z-index: 2;
+  margin: 0;
+  font-weight: 700;
+  font-size: calc(var(--title) * var(--k));
+  color: var(--ytb-title, inherit);
+  line-height: var(--title-lh);
+  letter-spacing: var(--title-ls);
+  text-wrap: balance;
+  text-shadow: 0 calc(2px * var(--k)) calc(16px * var(--k)) rgba(0,30,40,.18);
+}
+.ytb[data-depth="off"] .ytb__title { z-index: 5; }
+
+.ytb__sub {
+  position: relative; z-index: 5;
+  margin: 0;
+  font-family: var(--ytb-font-text);
+  font-size: calc(var(--sub) * var(--k));
+  line-height: 1.25;
+  font-weight: 600;
+  color: var(--ytb-sub, rgba(255,255,255,.94));
+  text-shadow: 0 1px calc(10px * var(--k)) rgba(0,30,40,.25);
+  max-width: 28em;
+}
+.ytb__sub--plate {
+  display: inline-block;
+  padding: .45em .7em;
+  border-radius: .55em;
+  background: var(--ytb-plate-bg, var(--ytb-accent));
+  color: var(--ytb-plate-color, var(--ytb-on-accent));
+  text-shadow: none;
+  transform: rotate(-2deg);
+  transform-origin: left center;
+  box-shadow: 0 calc(6px * var(--k)) calc(20px * var(--k)) rgba(40,0,80,.25);
+}
+
+.ytb__badge {
+  position: relative; z-index: 5;
+  display: inline-flex; align-items: center;
+  padding: .4em .75em;
+  border-radius: 999px;
+  font-family: var(--ytb-font-text);
+  font-size: calc(var(--badge) * var(--k));
+  font-weight: 600;
+  line-height: 1;
+  background: var(--ytb-badge-bg, var(--ytb-accent));
+  color: var(--ytb-badge-color, var(--ytb-on-accent));
+  white-space: nowrap;
+}
+.ytb__badge--light { background: var(--ytb-badge-bg, #fff); color: var(--ytb-badge-color, var(--ytb-accent)); }
+.ytb__badge--glass {
+  background: var(--ytb-badge-bg, rgba(255,255,255,.25));
+  border: 1px solid rgba(255,255,255,.3);
+  -webkit-backdrop-filter: blur(calc(10px * var(--k))); backdrop-filter: blur(calc(10px * var(--k)));
+  color: var(--ytb-badge-color, #fff);
+}
+
+.ytb__sticker {
+  position: absolute; z-index: 6;
+  top: calc(var(--pad-t) * var(--k) * .75); right: calc(var(--pad-r) * var(--k) * .75);
+  width: calc(var(--sticker) * var(--k)); height: calc(var(--sticker) * var(--k));
+  display: grid; place-items: center; align-content: center; text-align: center;
+  border-radius: 50%;
+  background: var(--ytb-sticker-bg, #fff);
+  color: var(--ytb-sticker-color, var(--ytb-accent));
+  font-weight: 800;
+  font-size: calc(var(--sticker) * var(--k) * .26);
+  line-height: .9;
+  letter-spacing: -0.02em;
+  transform: rotate(-10deg);
+  box-shadow: 0 calc(8px * var(--k)) calc(24px * var(--k)) rgba(0,30,40,.25);
+}
+.ytb__sticker small { display: block; font-size: .42em; font-weight: 600; letter-spacing: 0; margin-top: .15em; }
+.ytb__sticker--accent { background: var(--ytb-sticker-bg, var(--ytb-accent)); color: var(--ytb-sticker-color, var(--ytb-on-accent)); }
+
+/* ---------- кнопка (Glass, размеры DS) ---------- */
+.ytb__btn {
+  position: relative; z-index: 5;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: max-content;
+  height: calc(var(--btn-h) * var(--k));
+  padding: 0 calc(var(--btn-px) * var(--k));
+  border-radius: calc(var(--btn-r) * var(--k));
+  background: rgba(255,255,255,.25);
+  border: calc(1px * var(--k)) solid rgba(255,255,255,.2);
+  -webkit-backdrop-filter: blur(calc(var(--btn-blur) * var(--k))); backdrop-filter: blur(calc(var(--btn-blur) * var(--k)));
+  font-family: var(--ytb-font-text);
+  font-size: calc(var(--btn-fs) * var(--k));
+  line-height: calc(var(--btn-lh) * var(--k));
+  letter-spacing: calc(var(--btn-ls) * var(--k));
+  font-weight: 600;
+  color: #fff;
+  white-space: nowrap;
+  transition: background-color .15s ease-out;
+}
+.ytb__btn--l { --btn-h: 48px; --btn-px: 24px; --btn-fs: 15px; --btn-lh: 22px; --btn-ls: -0.24px; --btn-r: 10px; }
+.ytb__btn--m { --btn-h: 44px; --btn-px: 20px; --btn-fs: 15px; --btn-lh: 22px; --btn-ls: -0.24px; --btn-r: 9px; }
+.ytb__btn--s { --btn-h: 40px; --btn-px: 16px; --btn-fs: 14px; --btn-lh: 18px; --btn-ls: -0.224px; --btn-r: 8px; }
+.ytb:hover .ytb__btn, .ytb:focus-visible .ytb__btn, .ytb.is-hover .ytb__btn { background: rgba(255,255,255,.35); }
+.ytb:focus-visible { outline: 3px solid #fff; outline-offset: 2px; }
+
+/* ---------- раскладки ---------- */
+/* снизу: текст по центру свободной зоны, кнопка во всю ширину */
+.ytb[data-btn="bottom"] .ytb__content { grid-template-rows: 1fr auto; }
+.ytb[data-btn="bottom"] .ytb__btn { width: 100%; }
+/* справа: текст слева, кнопка прижата к низу справа */
+.ytb[data-btn="right"] .ytb__content { grid-template-columns: 1fr auto; align-items: center; }
+.ytb[data-btn="right"] .ytb__btn { align-self: end; }
+/* слева: текст и кнопка стопкой слева */
+.ytb[data-btn="left"] .ytb__content { grid-template-rows: 1fr auto; justify-items: start; }
+.ytb[data-btn="left"] .ytb__text { justify-content: center; }
+
+@media (prefers-reduced-motion: reduce) { .ytb__btn { transition: none; } }
