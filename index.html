@@ -27,12 +27,31 @@
     padding-left: max(16px, env(safe-area-inset-left, 0px)); padding-right: max(16px, env(safe-area-inset-right, 0px)); }
   .wrap { max-width: 1480px; margin: 0 auto; padding-block: 24px 64px; }
   header { display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between; gap: 12px; margin-bottom: 20px; }
+  .head__top { flex: 1 0 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+  /* логотип: цветной на светлой теме, белый на тёмной (правило бренда) */
+  .brand { display: block; flex: none; line-height: 0; border-radius: 6px; }
+  .brand img { height: 36px; width: auto; }
+  .brand__dark { display: none; }
+  @media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) .brand__light { display: none; } :root:not([data-theme="light"]) .brand__dark { display: block; } }
+  :root[data-theme="dark"] .brand__light { display: none; }
+  :root[data-theme="dark"] .brand__dark { display: block; }
   h1 { font-size: 22px; line-height: 1.2; margin: 0 0 4px; text-wrap: balance; }
   .lead { color: var(--muted); margin: 0; max-width: 72ch; }
   .hbtns { display: flex; flex-wrap: wrap; gap: 8px; }
   .layout { display: grid; grid-template-columns: 320px minmax(0, 1fr); gap: 20px; align-items: start; }
   .panel { background: var(--panel); border: 1px solid var(--line); border-radius: 16px; padding: 16px;
     position: sticky; top: calc(env(safe-area-inset-top, 0px) + 16px); max-height: calc(100vh - 32px); overflow: auto; }
+  /* тонкий ползунок прокрутки панели: только «палочка», без дорожки и стрелок */
+  @supports not selector(::-webkit-scrollbar) {
+    .panel { scrollbar-width: thin; scrollbar-color: transparent transparent; }
+    .panel:hover, .panel:focus-within { scrollbar-color: color-mix(in srgb, var(--muted) 45%, transparent) transparent; }
+  }
+  .panel::-webkit-scrollbar { width: 6px; }
+  .panel::-webkit-scrollbar-track { background: transparent; margin: 14px 0; }
+  .panel::-webkit-scrollbar-button { display: none; height: 0; }
+  .panel::-webkit-scrollbar-thumb { background: transparent; border-radius: 999px; }
+  .panel:hover::-webkit-scrollbar-thumb, .panel:focus-within::-webkit-scrollbar-thumb { background: color-mix(in srgb, var(--muted) 45%, transparent); }
+  .panel::-webkit-scrollbar-thumb:hover { background: color-mix(in srgb, var(--muted) 70%, transparent); }
   .panel h2 { font-size: 11px; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); margin: 20px 0 8px; }
   .panel h2:first-child { margin-top: 0; }
   label.f { display: block; margin: 0 0 10px; font-size: 12px; color: var(--muted); }
@@ -164,8 +183,14 @@
 
 <div class="wrap">
   <header>
-    <div class="head__l">
+    <div class="head__top">
       <h1>Редактор баннеров</h1>
+      <a class="brand" href="https://youtravel.me/" target="_blank" rel="noopener" aria-label="YouTravel.me — открыть сайт">
+        <img class="brand__light" src="img/logo-color.svg" alt="YouTravel.me" width="158" height="56">
+        <img class="brand__dark" src="img/logo-white.svg" alt="" width="158" height="56">
+      </a>
+    </div>
+    <div class="head__l">
       <div class="tabs" role="tablist" aria-label="Шаблон баннеров" id="tabs"></div>
       <p class="lead" id="lead"></p>
     </div>
