@@ -994,7 +994,8 @@
     ctx.setTransform(scale, 0, 0, scale, 0, 0);
     var ecs = getComputedStyle(el);
     ctx.save();
-    ctx.beginPath(); ctx.roundRect(0, 0, W, H, parseFloat(ecs.borderTopLeftRadius) || 0); ctx.clip();
+    // PNG всегда с прямыми углами; скругление остаётся только в превью и HTML
+    ctx.beginPath(); ctx.rect(0, 0, W, H); ctx.clip();
     ctx.fillStyle = ecs.backgroundColor; ctx.fillRect(0, 0, W, H);
     function rel(r) { return { x: r.left - R.left, y: r.top - R.top, w: r.width, h: r.height }; }
     function zeroShadow() { ctx.shadowColor = 'transparent'; ctx.shadowBlur = 0; ctx.shadowOffsetX = 0; ctx.shadowOffsetY = 0; }
