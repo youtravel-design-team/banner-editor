@@ -45,6 +45,12 @@
   .seg button[aria-pressed=true] { background: var(--panel); color: var(--ink); box-shadow: 0 1px 3px rgba(0,0,0,.12); font-weight: 600; }
   .btn { border: 1px solid var(--line); background: var(--panel); color: var(--ink); border-radius: 9px; padding: 6px 12px; font: inherit; font-size: 13px; cursor: pointer; white-space: nowrap; }
   .btn:hover { border-color: var(--muted); }
+  .btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+  .btn .ic, .drop .ic { width: 16px; height: 16px; flex: none; }
+  .btn--sm .ic { width: 14px; height: 14px; }
+  .btn--icon { padding: 4px 6px; min-width: 28px; }
+  .drop .ic { width: 24px; height: 24px; color: var(--acc); }
+  .tile__cap .btn { gap: 4px; }
   .btn:disabled { opacity: .55; cursor: progress; }
   .btn--acc { background: var(--acc); border-color: var(--acc); color: #fff; }
   .btn--sm { padding: 4px 8px; font-size: 12px; border-radius: 7px; }
@@ -114,7 +120,10 @@
   .tiles { display: flex; flex-wrap: wrap; gap: 18px; align-items: flex-start; }
   .tile { display: grid; gap: 8px; min-width: 0; max-width: 100%; }
   .frame { position: relative; overflow: hidden; border-radius: 4px; cursor: grab; touch-action: none; max-width: 100%; }
-  .frame:active { cursor: grabbing; }
+  .frame.is-drag { cursor: grabbing; }
+  .frame > a { pointer-events: none; -webkit-user-drag: none; user-select: none; }
+  .zoom { display: inline-flex; gap: 2px; }
+  .zoom .btn { min-width: 28px; padding: 4px 6px; }
   .frame .ytb { transform-origin: 0 0; position: absolute; left: 0; top: 0; }
   .tile__cap { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
   .tile__cap b { color: var(--ink); font-weight: 600; margin-right: auto; max-width: 18ch; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
@@ -161,8 +170,8 @@
       <p class="lead" id="lead"></p>
     </div>
     <div class="hbtns">
-      <button class="btn" type="button" id="zipAll">ZIP: все PNG ×2</button>
-      <button class="btn" type="button" id="reset">Сбросить настройки</button>
+      <button class="btn" type="button" id="zipAll" data-icon="download">ZIP: все PNG ×2</button>
+      <button class="btn" type="button" id="reset" data-icon="reset">Сбросить настройки</button>
     </div>
   </header>
 
@@ -170,6 +179,7 @@
     <aside class="panel" id="panel">
       <h2>Фото</h2>
       <label class="drop" id="drop" for="upload">
+        <span data-icon="upload"></span>
         <strong>Добавить фото</strong>
         <span id="dropHint">Нажмите или перетащите сюда — можно несколько. Каждое фото станет вариантом.</span>
       </label>
@@ -282,7 +292,7 @@
 
 <dialog id="codeDlg">
   <div class="dlg__head"><h4 id="codeTitle">HTML баннера</h4>
-    <div class="hbtns"><button class="btn btn--acc" type="button" id="codeCopy">Копировать</button><button class="btn" type="button" id="codeClose">Закрыть</button></div></div>
+    <div class="hbtns"><button class="btn btn--acc" type="button" id="codeCopy"><span data-icon="copy"></span><span class="lbl">Копировать</span></button><button class="btn" type="button" id="codeClose" data-icon="close">Закрыть</button></div></div>
   <pre id="codePre"></pre>
 </dialog>
 <div class="status" id="status" role="status" hidden></div>
@@ -290,6 +300,27 @@
 
 <script>
 (function () {
+  /* ================= иконки (линейные, 24×24, цвет = цвет текста кнопки) ================= */
+  var ICONS = {
+    download: '<path d="M12 4v11"/><path d="m7 10 5 5 5-5"/><path d="M5 20h14"/>',
+    upload: '<path d="M12 16V4"/><path d="m7 9 5-5 5 5"/><path d="M5 20h14"/>',
+    archive: '<rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v10a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9"/><path d="M10 13h4"/>',
+    reset: '<path d="M3 12a9 9 0 1 0 2.6-6.4"/><path d="M3 4v5h5"/>',
+    image: '<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-5-5L5 21"/>',
+    fileCode: '<path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/><path d="m10 13-2 2 2 2"/><path d="m14 17 2-2-2-2"/>',
+    code: '<path d="m16 18 6-6-6-6"/><path d="m8 6-6 6 6 6"/>',
+    copy: '<rect x="9" y="9" width="12" height="12" rx="2"/><path d="M5 15H4a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h10a1 1 0 0 1 1 1v1"/>',
+    close: '<path d="M6 6l12 12"/><path d="M18 6 6 18"/>',
+    eye: '<path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/>',
+    eyeOff: '<path d="M2 12s3.5-7 10-7c2.1 0 3.9.7 5.3 1.7M22 12s-3.5 7-10 7c-2.1 0-3.9-.7-5.3-1.7"/><path d="M3 3l18 18"/>',
+    trash: '<path d="M3 6h18"/><path d="M8 6V4h8v2"/><path d="M6 6l1 14h10l1-14"/>',
+    layers: '<path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/>',
+    zoomIn: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/><path d="M11 8v6"/><path d="M8 11h6"/>',
+    zoomOut: '<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4"/><path d="M8 11h6"/>'
+  };
+  function ic(n) { return '<svg class="ic" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">' + ICONS[n] + '</svg>'; }
+  document.querySelectorAll('[data-icon]').forEach(function (n) { var svg = ic(n.dataset.icon); if (n.tagName === 'SPAN' && !n.textContent) n.outerHTML = svg; else n.insertAdjacentHTML('afterbegin', svg); });
+
   /* ================= утилиты ================= */
   function v(id) { return document.getElementById(id); }
   function clone(o) { return JSON.parse(JSON.stringify(o)); }
@@ -320,7 +351,7 @@
   var TEMPLATES = {
     tours: {
       id: 'tours', name: 'Обычные баннеры', key: 'ytb-editor-v2', css: 'assets/ytb.css', prefix: 'ytb',
-      lead: 'Все ресайзы из Figma. В каждом размере — ряд вариантов с разными фото. Перетащите фото внутри баннера, чтобы поправить кадр под этот размер; двойной клик — вернуть общий кадр.',
+      lead: 'Фото внутри баннера можно перетащить, чтобы выбрать удачный кадр.',
       sizes: [
         { id: '276x416', g: 'site', btn: 'bottom', note: 'карточка в ленте' },
         { id: '876x224', g: 'site', btn: 'right', alt: 1, note: 'широкий в ленте' },
@@ -649,14 +680,14 @@
         '<div class="var__head"><img class="var__thumb" alt="" src="' + esc(urls[va.id].bg) + '">' +
         (t.varExtra ? '<span class="var__tint" style="background:' + (normHex(va.tint) || '#07505a') + '" title="Цвет фона"></span>' : '') +
         '<input class="var__name" type="text" aria-label="Название варианта" value="' + esc(va.name) + '">' +
-        '<button class="btn btn--sm" type="button" data-act="hide">' + (va.hidden ? 'Показать' : 'Скрыть') + '</button></div>' +
+        '<button class="btn btn--sm" type="button" data-act="hide">' + ic(va.hidden ? 'eye' : 'eyeOff') + (va.hidden ? 'Показать' : 'Скрыть') + '</button></div>' +
         '<details' + (t.varExtra && t.variants.length === 1 ? ' open' : '') + '><summary>' + (t.varExtra ? 'Цвет фона и кадр' : 'Кадр и затемнение') + (overN ? ' · правок по размерам: ' + overN : '') + '</summary><div class="var__body">' +
         '<div class="var__tintbox"></div>' +
         t.sliders.map(function (s) { return slider(s[0], s[1], va[s[0]] != null ? va[s[0]] : 0, s[2], s[3]); }).join('') +
         '<div class="var__btns">' +
-        (t.allowFg ? (va.fgFile ? '<button class="btn btn--sm" type="button" data-act="fgdel">Убрать передний план</button>' : '<button class="btn btn--sm" type="button" data-act="fg">+ Передний план (PNG)</button>') : '') +
-        (overN ? '<button class="btn btn--sm" type="button" data-act="overdel">Сбросить правки кадра</button>' : '') +
-        '<button class="btn btn--sm" type="button" data-act="del">Удалить</button>' +
+        (t.allowFg ? (va.fgFile ? '<button class="btn btn--sm" type="button" data-act="fgdel">' + ic('layers') + 'Убрать передний план</button>' : '<button class="btn btn--sm" type="button" data-act="fg">' + ic('layers') + 'Передний план (PNG)</button>') : '') +
+        (overN ? '<button class="btn btn--sm" type="button" data-act="overdel">' + ic('reset') + 'Сбросить правки кадра</button>' : '') +
+        '<button class="btn btn--sm" type="button" data-act="del">' + ic('trash') + 'Удалить</button>' +
         '</div></div></details>';
       if (t.varExtra) {
         el.querySelector('.var__tintbox').appendChild(colorRow({ label: 'Цвет фона', value: normHex(va.tint) || '#07505a', tpl: '#07505a', swatches: TINTS, noReset: true,
@@ -726,7 +757,7 @@
     if (!t.variants.length) {
       stage.innerHTML = '<section class="card es"><div class="es__art" aria-hidden="true">' + t.emptyArt + '</div>' +
         '<h3>Добавьте первое фото</h3><p>' + t.emptyText + '</p>' +
-        '<div class="hbtns"><label class="btn btn--acc" for="upload">Добавить фото</label><button class="btn" type="button" data-demo>Показать пример «' + esc(t.builtin.name) + '»</button></div>' +
+        '<div class="hbtns"><label class="btn btn--acc" for="upload">' + ic('upload') + 'Добавить фото</label><button class="btn" type="button" data-demo>' + ic('image') + 'Показать пример «' + esc(t.builtin.name) + '»</button></div>' +
         '<p class="note">Или перетащите файлы в любое место страницы.</p></section>';
       stage.querySelector('[data-demo]').addEventListener('click', function () { t.variants.push(clone(t.builtin)); urls[t.builtin.id] = clone(t.builtinUrls); renderAll(); });
       return;
@@ -739,21 +770,25 @@
       var sc = scaleFor(s);
       var card = document.createElement('section'); card.className = 'card';
       card.innerHTML = '<div class="card__head"><h3>' + s.id.replace('x', '×') + '<span>' + t.groups[s.g] + (s.note ? ' · ' + s.note : '') + (sc < 1 ? ' · превью ' + Math.round(sc * 100) + '%' : '') + '</span></h3>' +
-        '<button class="btn btn--sm" type="button" data-zip>ZIP: PNG ×2 всех вариантов</button></div><div class="tiles"></div>';
+        '<button class="btn btn--sm" type="button" data-zip>' + ic('download') + 'ZIP: PNG ×2 всех вариантов</button></div><div class="tiles"></div>';
       card.querySelector('[data-zip]').addEventListener('click', function (e) { zipJob(e.currentTarget, [s]); });
       var tiles = card.querySelector('.tiles');
       shown.forEach(function (va) {
         var tl = document.createElement('div'); tl.className = 'tile';
         var over = (va.over || {})[s.id];
-        tl.innerHTML = '<div class="frame" style="width:' + Math.round(s.w * sc) + 'px;height:' + Math.round(s.h * sc) + 'px" title="Перетащите фото, чтобы поправить кадр. Колесо с Alt — зум. Двойной клик — сброс.">' + markup(s, va) + '</div>' +
-          '<div class="tile__cap"><b>' + esc(va.name) + '</b>' + (over ? '<span class="tile__over">кадр изменён</span>' : '') +
-          '<button class="btn btn--sm" type="button" data-a="png">PNG ×2</button><button class="btn btn--sm" type="button" data-a="html">HTML</button><button class="btn btn--sm" type="button" data-a="code">Код</button></div>';
+        tl.innerHTML = '<div class="frame" style="width:' + Math.round(s.w * sc) + 'px;height:' + Math.round(s.h * sc) + 'px" title="Перетащите фото, чтобы поправить кадр. Зум — кнопки «−» и «+» или Alt + колесо. Двойной клик — сброс.">' + markup(s, va) + '</div>' +
+          '<div class="tile__cap"><b>' + esc(va.name) + '</b>' + (over ? '<button class="btn btn--sm tile__over" type="button" data-a="reset" title="Вернуть общий кадр (или двойной клик по баннеру)">' + ic('reset') + 'кадр изменён</button>' : '') +
+          '<span class="zoom"><button class="btn btn--sm btn--icon" type="button" data-a="zout" aria-label="Уменьшить зум" title="Уменьшить зум">' + ic('zoomOut') + '</button><button class="btn btn--sm btn--icon" type="button" data-a="zin" aria-label="Увеличить зум" title="Увеличить зум">' + ic('zoomIn') + '</button></span>' +
+          '<button class="btn btn--sm" type="button" data-a="png" title="Скачать PNG в двойном размере">' + ic('download') + 'PNG ×2</button><button class="btn btn--sm" type="button" data-a="html" title="Скачать HTML-файл">' + ic('fileCode') + 'HTML</button><button class="btn btn--sm" type="button" data-a="code" title="Показать код для сайта">' + ic('code') + 'Код</button></div>';
         var ban = tl.querySelector('.frame > a'); ban.style.transform = 'scale(' + sc + ')'; if (t.vals.hoverPreview) ban.classList.add('is-hover');
         tl.style.width = Math.max(Math.round(s.w * sc), 230) + 'px';
         bindDrag(tl.querySelector('.frame'), ban, s, va, sc);
         tl.querySelector('[data-a=png]').addEventListener('click', function (e) { job(e.currentTarget, function () { return exportPNG(s, va).then(function (b) { return saveFile(fname(s, va) + '@2x.png', b); }); }); });
         tl.querySelector('[data-a=html]').addEventListener('click', function (e) { job(e.currentTarget, function () { return buildStandalone(s, va).then(function (h) { return saveFile(fname(s, va) + '.html', new Blob([h], { type: 'text/html' })); }); }); });
         tl.querySelector('[data-a=code]').addEventListener('click', function () { openCode(s, va); });
+        tl.querySelector('[data-a=zin]').addEventListener('click', function () { zoomStep(va, s.id, .1); });
+        tl.querySelector('[data-a=zout]').addEventListener('click', function () { zoomStep(va, s.id, -.1); });
+        var rb = tl.querySelector('[data-a=reset]'); if (rb) rb.addEventListener('click', function () { delete va.over[s.id]; renderAll(); });
         tiles.appendChild(tl);
       });
       stage.appendChild(card);
@@ -761,37 +796,60 @@
   }
 
   /* перетаскивание кадра */
+  // Перетаскивание кадра. Баннер внутри превью не получает событий (pointer-events:none),
+  // поэтому нет ни перехода по ссылке, ни «призрачного» нативного перетаскивания картинки.
+  var lastTap = {}, hinted = false;
+  function commitOver(va, sid, e) { va.over = va.over || {}; va.over[sid] = { fx: r3(e.fx), fy: r3(e.fy), zoom: r3(e.zoom) }; renderVars(); renderStage(); save(); }
   function bindDrag(frame, ban, s, va, sc) {
-    var start = null, t = T();
+    var start = null, t = T(), key = va.id + '@' + s.id;
     function cur() { return eff(va, s.id); }
     function apply(e) { ban.style.setProperty('--fx', r3(e.fx)); ban.style.setProperty('--fy', r3(e.fy)); ban.style.setProperty('--zoom', r3(e.zoom)); }
+    frame.addEventListener('dragstart', function (ev) { ev.preventDefault(); });
     frame.addEventListener('pointerdown', function (ev) {
       if (ev.button !== 0) return;
+      ev.preventDefault();
       var lay = ban.querySelector(t.layerSel), box = lay.parentElement;
-      start = { x: ev.clientX, y: ev.clientY, e: cur(), sw: lay.offsetWidth, sh: lay.offsetHeight, bw: box.clientWidth, bh: box.clientHeight };
-      frame.setPointerCapture(ev.pointerId);
+      start = { x: ev.clientX, y: ev.clientY, e: cur(), sw: lay.offsetWidth, sh: lay.offsetHeight, bw: box.clientWidth, bh: box.clientHeight, moved: false };
+      try { frame.setPointerCapture(ev.pointerId); } catch (err) {}
+      frame.classList.add('is-drag');
     });
     frame.addEventListener('pointermove', function (ev) {
       if (!start) return;
-      var dx = (ev.clientX - start.x) / sc, dy = (ev.clientY - start.y) / sc, e = Object.assign({}, start.e);
+      var px = ev.clientX - start.x, py = ev.clientY - start.y;
+      if (!start.moved && Math.abs(px) < 3 && Math.abs(py) < 3) return; // порог, чтобы клик не сдвигал кадр
+      start.moved = true;
+      var dx = px / sc, dy = py / sc, e = Object.assign({}, start.e);
       var ox = start.bw - start.sw, oy = start.bh - start.sh;
       if (ox < -0.5) e.fx = Math.min(1, Math.max(0, start.e.fx + dx / ox));
       if (oy < -0.5) e.fy = Math.min(1, Math.max(0, start.e.fy + dy / oy));
+      if (!hinted && ((ox >= -0.5 && Math.abs(dx) > 12) || (oy >= -0.5 && Math.abs(dy) > 12))) {
+        hinted = true;
+        toast('Фото уже точно по ' + (ox >= -0.5 ? 'ширине' : 'высоте') + ' баннера — двигать в эту сторону некуда. Увеличьте зум кнопкой «+» под баннером.');
+      }
       start.last = e; apply(e);
     });
-    function end() {
-      if (start && start.last) { va.over = va.over || {}; va.over[s.id] = start.last; start = null; renderVars(); renderStage(); save(); }
-      start = null;
+    function end(ev) {
+      if (!start) return;
+      var st = start; start = null; frame.classList.remove('is-drag');
+      if (st.moved && st.last) { lastTap[key] = 0; commitOver(va, s.id, st.last); return; }
+      if (ev && ev.type === 'pointercancel') return;
+      // двойное нажатие без движения — вернуть общий кадр
+      var now = Date.now();
+      if (now - (lastTap[key] || 0) < 350) { lastTap[key] = 0; if (va.over && va.over[s.id]) { delete va.over[s.id]; renderAll(); toast('Кадр этого размера сброшен'); } }
+      else lastTap[key] = now;
     }
     frame.addEventListener('pointerup', end); frame.addEventListener('pointercancel', end);
-    frame.addEventListener('dblclick', function () { if (va.over && va.over[s.id]) { delete va.over[s.id]; renderAll(); } });
     frame.addEventListener('wheel', function (ev) {
       if (!ev.altKey) return;
       ev.preventDefault();
       var e = cur(); e.zoom = Math.min(2.5, Math.max(1, e.zoom * (1 - ev.deltaY * 0.0015)));
       va.over = va.over || {}; va.over[s.id] = e; apply(e);
-      clearTimeout(frame._wt); frame._wt = setTimeout(function () { renderVars(); renderStage(); save(); }, 400);
+      clearTimeout(frame._wt); frame._wt = setTimeout(function () { commitOver(va, s.id, e); }, 400);
     }, { passive: false });
+  }
+  function zoomStep(va, sid, d) {
+    var e = eff(va, sid); e.zoom = Math.min(2.5, Math.max(1, Math.round((e.zoom + d) * 100) / 100));
+    commitOver(va, sid, e);
   }
 
   /* ================= загрузка фото ================= */
@@ -857,7 +915,8 @@
   v('codeClose').addEventListener('click', function () { v('codeDlg').close(); });
   v('codeCopy').addEventListener('click', function (e) {
     var b = e.currentTarget;
-    function done(m) { b.textContent = m; setTimeout(function () { b.textContent = 'Копировать'; }, 1600); }
+    var lbl = b.querySelector('.lbl');
+    function done(m) { lbl.textContent = m; setTimeout(function () { lbl.textContent = 'Копировать'; }, 1600); }
     function fallback() { var r = document.createRange(); r.selectNodeContents(v('codePre')); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); done('Выделено — Ctrl+C'); }
     try { navigator.clipboard.writeText(codeText).then(function () { done('Скопировано'); }, fallback); } catch (err) { fallback(); }
   });
