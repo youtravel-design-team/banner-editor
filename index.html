@@ -63,6 +63,7 @@
   .slider { display: grid; grid-template-columns: 76px 1fr 38px; align-items: center; gap: 8px; font-size: 12px; color: var(--muted); }
   .slider input { width: 100%; accent-color: var(--acc); }
   .slider output { text-align: right; font-variant-numeric: tabular-nums; }
+  .slider.sz { grid-template-columns: auto 1fr 40px; }
   .var__btns { display: flex; flex-wrap: wrap; gap: 6px; }
   .drop { display: grid; place-items: center; gap: 4px; text-align: center; padding: 14px; border: 1.5px dashed var(--line); border-radius: 12px; color: var(--muted); font-size: 12px; cursor: pointer; }
   .drop:hover, body.dragging .drop { border-color: var(--acc); color: var(--ink); background: var(--acc-soft); }
@@ -183,6 +184,7 @@
         <section class="el">
           <div class="el__head"><h2>Заголовок</h2></div>
           <label class="f">Текст · «|» — перенос в вертикальных<input type="text" id="tours-title" data-f="title"></label>
+          <label class="slider sz"><span>Размер</span><input type="range" min="0.6" max="1.6" step="0.05" data-r="titleScale" aria-label="Размер заголовка"><output></output></label>
           <div class="colors" data-colors="title"></div>
         </section>
         <section class="el">
@@ -228,6 +230,7 @@
           <div class="el__head"><h2>Оффер</h2></div>
           <label class="f">Название<input type="text" data-f="title"></label>
           <label class="f">Цена<input type="text" data-f="price"></label>
+          <label class="slider sz"><span>Размер названия</span><input type="range" min="0.6" max="1.6" step="0.05" data-r="titleScale" aria-label="Размер названия"><output></output></label>
           <div class="colors" data-colors="offer"></div>
         </section>
         <section class="el">
@@ -329,7 +332,7 @@
       newVariant: { fx: .5, fy: .5, zoom: 1, dim: .1 },
       sliders: [['fx', 'Фокус X', 0, 1], ['fy', 'Фокус Y', 0, 1], ['zoom', 'Зум', 1, 2.5], ['dim', 'Затемнение', 0, .6]],
       allowFg: true,
-      vals: { title: 'Туры|месяца', sub: 'Авторские туры со скидкой до 30%', badge: 'Только в ноябре', sticker: '−30%|до 30.11', btn: 'Выбрать тур', href: 'https://youtravel.me/', imgBase: 'img/', showSub: false, showBadge: false, showSticker: false, depth: true, showBtn: true, hoverPreview: false },
+      vals: { title: 'Туры|месяца', sub: 'Авторские туры со скидкой до 30%', badge: 'Только в ноябре', sticker: '−30%|до 30.11', btn: 'Выбрать тур', href: 'https://youtravel.me/', imgBase: 'img/', showSub: false, showBadge: false, showSticker: false, depth: true, showBtn: true, hoverPreview: false, titleScale: 1 },
       state: { subStyle: 'plain', badgeTone: '', stickerTone: '', wideBtn: '', btnSize: '' },
       swatches: DS_COLORS,
       colorItems: function (T, el) {
@@ -351,7 +354,7 @@
         var V = T.vals, st = T.state, btn = this.btnPos(T, s), i = '  ', o = [];
         var depth = V.depth && !!src.fg;
         var title = esc(typo(V.title)).split('|').join(btn === 'bottom' ? '<br>' : ' ');
-        var style = '--ar:' + r3(va.ar) + ';--fx:' + r3(e.fx) + ';--fy:' + r3(e.fy) + ';--zoom:' + r3(e.zoom) + ';--dim:' + r3(va.dim || 0) + colorStyle(T);
+        var style = '--ar:' + r3(va.ar) + ';--fx:' + r3(e.fx) + ';--fy:' + r3(e.fy) + ';--zoom:' + r3(e.zoom) + ';--dim:' + r3(va.dim || 0) + (V.titleScale && V.titleScale !== 1 ? ';--title-scale:' + r3(V.titleScale) : '') + colorStyle(T);
         o.push('<a class="ytb" data-size="' + s.id + '" data-btn="' + btn + '" data-depth="' + (depth ? 'on' : 'off') + '" style="' + style + '" href="' + esc(V.href) + '">');
         o.push(i + '<div class="ytb__layer ytb__layer--bg"><img src="' + esc(src.bg) + '" alt=""></div>');
         o.push(i + '<div class="ytb__shade"></div>');
@@ -406,7 +409,7 @@
       newVariant: { fx: .5, fy: .5, zoom: 1, tint: '#07505a' },
       sliders: [['fx', 'Фокус X', 0, 1], ['fy', 'Фокус Y', 0, 1], ['zoom', 'Зум', 1, 2.5]],
       allowFg: false,
-      vals: { title: 'Улетные Мальдивы', price: 'от 145 000 ₽', details: '4 острова|8 дней|все включено*', showDetails: true, btn: 'Смотреть тур', note: '*кроме авиаперелёта', showNote: true, href: 'https://youtravel.me/', imgBase: 'img/', hoverPreview: false },
+      vals: { title: 'Улетные Мальдивы', price: 'от 145 000 ₽', details: '4 острова|8 дней|все включено*', showDetails: true, btn: 'Смотреть тур', note: '*кроме авиаперелёта', showNote: true, href: 'https://youtravel.me/', imgBase: 'img/', hoverPreview: false, titleScale: 1 },
       state: {},
       swatches: DS_COLORS,
       colorItems: function (T, el) {
@@ -419,7 +422,7 @@
       colorVar: function (k) { return '--ts-' + k; },
       markup: function (T, s, va, src, e) {
         var V = T.vals, i = '  ', o = [];
-        var style = '--ar:' + r3(va.ar) + ';--fx:' + r3(e.fx) + ';--fy:' + r3(e.fy) + ';--zoom:' + r3(e.zoom) + ';--tint:' + (normHex(va.tint) || '#07505a') + colorStyle(T);
+        var style = '--ar:' + r3(va.ar) + ';--fx:' + r3(e.fx) + ';--fy:' + r3(e.fy) + ';--zoom:' + r3(e.zoom) + ';--tint:' + (normHex(va.tint) || '#07505a') + (V.titleScale && V.titleScale !== 1 ? ';--ts-title-scale:' + r3(V.titleScale) : '') + colorStyle(T);
         var dot = '<i class="tsb__dot"></i>';
         o.push('<a class="tsb" data-size="' + s.id + '" style="' + style + '" href="' + esc(V.href) + '">');
         o.push(i + '<div class="tsb__photo"><div class="tsb__layer"><img src="' + esc(src.bg) + '" alt=""></div></div>');
@@ -550,10 +553,12 @@
     var t = T();
     scoped('[data-f]').forEach(function (inp) { inp.value = t.vals[inp.dataset.f] != null ? t.vals[inp.dataset.f] : ''; });
     scoped('[data-c]').forEach(function (inp) { inp.checked = !!t.vals[inp.dataset.c]; });
+    scoped('[data-r]').forEach(function (inp) { var x = t.vals[inp.dataset.r]; inp.value = x; inp.nextElementSibling.textContent = Math.round(x * 100) + '%'; });
   }
   document.getElementById('panel').addEventListener('input', function (e) {
     var n = e.target;
     if (n.dataset.f !== undefined) { T().vals[n.dataset.f] = n.value; scheduleStage(); }
+    if (n.dataset.r !== undefined) { T().vals[n.dataset.r] = +n.value; n.nextElementSibling.textContent = Math.round(n.value * 100) + '%'; scheduleStage(); }
   });
   document.getElementById('panel').addEventListener('change', function (e) {
     var n = e.target;

@@ -9,6 +9,7 @@
      --ts-ink          — цвет оффера (название и цена)
      --ts-chip-bg, --ts-chip-color — плашка деталей
      --ts-note         — сноска
+     --ts-title-scale  — множитель размера названия (1 = как в мастере)
    ========================================================================== */
 
 
@@ -64,7 +65,7 @@
   display: flex; flex-direction: column; justify-content: center; gap: 2px; }
 .tsb__main { display: flex; flex-direction: column; align-items: flex-start; gap: 12px; }
 .tsb__offer { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-.tsb__title { font-size: 28px; letter-spacing: -0.56px; }
+.tsb__title { font-size: calc(28px * var(--ts-title-scale, 1)); letter-spacing: -0.02em; }
 .tsb__price { font-size: 24px; letter-spacing: -0.48px; }
 .tsb__dot { display: block; flex: none; width: 4px; height: 4px; border-radius: 50px; background: currentColor; }
 .tsb__row { display: flex; align-items: center; gap: 12px; width: 100%; }
@@ -96,7 +97,7 @@
 .tsb[data-size="343x188"] .tsb__main { gap: 10px; }
 .tsb[data-size="343x188"] .tsb__offer { flex-direction: column; align-items: flex-start; gap: 0; white-space: normal; }
 .tsb[data-size="343x188"] .tsb__offer > .tsb__dot { display: none; }
-.tsb[data-size="343x188"] .tsb__title { font-size: 17px; letter-spacing: -0.34px; max-width: 190px; }
+.tsb[data-size="343x188"] .tsb__title { font-size: calc(17px * var(--ts-title-scale, 1)); letter-spacing: -0.02em; max-width: 190px; }
 .tsb[data-size="343x188"] .tsb__price { font-size: 18px; letter-spacing: -0.36px; max-width: 190px; }
 .tsb[data-size="343x188"] .tsb__row { flex-direction: column; align-items: flex-start; gap: 10px; }
 .tsb[data-size="343x188"] .tsb__chip { gap: 5px; padding: 5px 8px; font-size: 10px; letter-spacing: -0.2px; }

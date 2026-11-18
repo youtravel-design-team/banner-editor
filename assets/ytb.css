@@ -10,6 +10,7 @@
      --fx, --fy — фокус 0…1 (0 — левый/верхний край, 1 — правый/нижний)
      --zoom — увеличение поверх «cover», по умолчанию 1
      --dim  — затемнение фото 0…0.6
+     --title-scale — множитель размера заголовка (1 = по пресету)
    Цвета (необязательно, inline на баннере): --ytb-title, --ytb-sub, --ytb-plate-bg, --ytb-plate-color,
      --ytb-badge-bg, --ytb-badge-color, --ytb-sticker-bg, --ytb-sticker-color. Без них — цвета шаблона.
    Элементы: .ytb__badge, .ytb__title, .ytb__sub (.ytb__sub--plate), .ytb__sticker, .ytb__btn
@@ -115,7 +116,7 @@
   position: relative; z-index: 2;
   margin: 0;
   font-weight: 700;
-  font-size: calc(var(--title) * var(--k));
+  font-size: calc(var(--title) * var(--k) * var(--title-scale, 1));
   color: var(--ytb-title, inherit);
   line-height: var(--title-lh);
   letter-spacing: var(--title-ls);
