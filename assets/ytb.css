@@ -66,6 +66,8 @@
   /* кнопка S из DS 3.0 */
   --btn-h: 40px; --btn-px: 16px; --btn-fs: 14px; --btn-lh: 18px; --btn-ls: -0.224px; --btn-r: 8px; }
 .ytb[data-size="426x156"][data-btn="left"] { --title: 26px; --gap: 6px; --pad-t: 16px; --pad-b: 16px; }
+.ytb[data-size="830x370"]  { --w: 830px;  --h: 370px;  --k: 1.3; --radius: 24px; --pad-t: 32px; --pad-r: 32px; --pad-b: 32px; --pad-l: 48px; --title: 48px; --sub: 17px; --badge: 13px; --gap: 12px; --sticker: 84px; --logo: 22px; }
+.ytb[data-size="830x370"][data-btn="left"] { --title: 46px; --gap: 11px; --pad-t: 28px; --pad-b: 28px; }
 .ytb[data-size="1440x400"] { --w: 1440px; --h: 400px;  --k: 1.5; --radius: 24px; --pad-t: 40px; --pad-r: 40px; --pad-b: 40px; --pad-l: 64px; --title: 52px; --sub: 18px; --badge: 14px; --gap: 14px; --sticker: 96px; }
 .ytb[data-size="48x48"]    { --w: 48px;   --h: 48px;   --k: 1;   --radius: 12px; }
 /* соцсети */

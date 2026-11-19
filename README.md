@@ -5,7 +5,7 @@
 - Сайт: https://youtravel-design-team.github.io/banner-editor/ (TopSort — `#topsort`)
 - Репозиторий: https://github.com/youtravel-design-team/banner-editor
 
-- **Обычные баннеры** — 13 ресайзов (сайт, соцсети, реклама), стили `assets/ytb.css`.
+- **Обычные баннеры** — 14 ресайзов (сайт, соцсети, реклама), стили `assets/ytb.css`.
 - **TopSort** — 1176×147 и 343×188 по мастер-шаблону Figma, стили `assets/tsb.css`.
 - Загрузка своих фото, кадрирование, цвета, тексты; экспорт PNG ×2, ZIP и самодостаточного HTML.
 - Фото и настройки хранятся в браузере пользователя (localStorage + IndexedDB), на сервер ничего не уходит.
