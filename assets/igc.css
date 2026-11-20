@@ -1,0 +1,82 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap");
+/* ==========================================================================
+   YouTravel.me — карусели Instagram 1080×1340 (Figma «Banners» → раздел «2026»)
+   Раскладки (data-type): coverA — обложка с крупным заголовком и логотипом,
+   coverB — обложка с заголовком и текстом, cardC — карточка с двумя фото,
+   cardD — карточка с одним фото.
+   Цвета темы — переменные на .igc: --ig-bg, --ig-title, --ig-sub, --ig-text,
+   --ig-accent, --ig-ink (текст на фото), --ig-ov (цвет затемнения обложки).
+   ========================================================================== */
+
+
+.igc {
+  --ig-bg: #ffffff; --ig-title: #465909; --ig-sub: #597209; --ig-text: #475b08; --ig-accent: #465909;
+  --ig-ink: #ecffb8; --ig-ink-g: none; --ig-ov: #465909; --ig-ov-end: 86.54%; --ig-pol-sh: -2px 1px 28px rgba(153,153,169,.3);
+  position: relative; display: block; width: 1080px; height: 1340px; overflow: hidden;
+  background: var(--ig-bg); color: var(--ig-text);
+  font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased; line-height: normal; box-sizing: border-box; isolation: isolate;
+}
+.igc *, .igc *::before, .igc *::after { box-sizing: border-box; }
+.igc img { display: block; max-width: none; }
+
+/* фото: «cover» с фокусом и зумом, как в обычных баннерах */
+.igc__ph { position: absolute; overflow: hidden; --ar: 1.5; --fx: .5; --fy: .5; --zoom: 1; }
+.igc__ph > img { position: absolute; pointer-events: none; user-select: none; -webkit-user-drag: none;
+  width: calc(max(var(--w) * 1px, var(--h) * 1px * var(--ar)) * var(--zoom));
+  height: calc(max(var(--w) * 1px, var(--h) * 1px * var(--ar)) * var(--zoom) / var(--ar));
+  left: calc((var(--w) * 1px - max(var(--w) * 1px, var(--h) * 1px * var(--ar)) * var(--zoom)) * var(--fx));
+  top: calc((var(--h) * 1px - max(var(--w) * 1px, var(--h) * 1px * var(--ar)) * var(--zoom) / var(--ar)) * var(--fy)); }
+.igc__ph--bg { inset: 0; --w: 1080; --h: 1340; }
+.igc__dim { position: absolute; inset: 0; background: #000000; pointer-events: none; }
+.igc__ph:empty, .igc__ph[data-empty] { background: color-mix(in srgb, var(--ig-title) 12%, #ffffff); }
+
+/* затемнение обложки «Б» и полоса под заголовком обложки «А» */
+.igc__ov { position: absolute; inset: 0; pointer-events: none;
+  background: linear-gradient(180deg, transparent 55.56%, color-mix(in srgb, var(--ig-ov) 50%, transparent) 64.961%, var(--ig-ov) var(--ig-ov-end)); }
+.igc__bar { position: absolute; left: -12px; top: 1118px; width: 837px; height: 135px; background: rgba(0,0,0,.81); filter: blur(116.4px); pointer-events: none; }
+
+/* полароиды */
+.igc__pol { position: absolute; background: #ffffff; border-radius: 5px; box-shadow: var(--ig-pol-sh); }
+.igc__pol > .igc__ph { border-radius: 2px; }
+
+/* текст */
+.igc__txt { position: absolute; left: 75px; width: 930px; display: flex; flex-direction: column; align-items: flex-start; }
+.igc__txt--bottom { bottom: 174px; }
+.igc__txt--top { top: 47px; }
+.igc__title { margin: 0 0 38px; font-weight: 700; font-size: calc(var(--ts, 150) * 1px); line-height: 1.12; letter-spacing: -.03em;
+  color: var(--ig-title); text-shadow: 1px 3px 60px rgba(153,153,169,.35); text-wrap: balance; }
+.igc__sub { margin: 0; font-weight: 700; font-size: 40px; line-height: 32px; letter-spacing: -.03em; color: var(--ig-sub); }
+.igc__p { margin: 27px 0 0; max-width: 700px; font-family: "Inter", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+  font-weight: 400; font-size: 32px; line-height: 38px; letter-spacing: -.03em; color: var(--ig-text); }
+.igc__txt > :last-child { margin-bottom: 0; }
+
+/* текст на фото — светлый, градиентом как в макете */
+.igc[data-type^="cover"] .igc__title, .igc[data-type^="cover"] .igc__sub, .igc[data-type^="cover"] .igc__p { color: var(--ig-ink); text-shadow: none; }
+.igc[data-g="1"][data-type^="cover"] .igc__title, .igc[data-g="1"][data-type^="cover"] .igc__sub, .igc[data-g="1"][data-type^="cover"] .igc__p {
+  background-image: var(--ig-ink-g); -webkit-background-clip: text; background-clip: text; color: transparent; }
+.igc[data-type="coverB"] .igc__sub { font-size: 40px; }
+
+/* обложка «А»: заголовок по центру внизу, логотип */
+.igc[data-type="coverA"] .igc__txt { left: 62px; width: 956px; bottom: 214px; align-items: center; text-align: center; }
+.igc[data-type="coverA"] .igc__title { margin: 0; font-weight: 800; letter-spacing: -.03em; line-height: .95; padding-bottom: .04em; }
+.igc__logo { position: absolute; left: 50%; top: 1188px; width: 164px; height: auto; transform: translateX(-50%); pointer-events: none; }
+
+/* стрелка-линия и треугольник «листай» */
+.igc__arrow { position: absolute; left: 73.5px; top: 1238.95px; width: 444px; height: 22px; color: var(--ig-accent); pointer-events: none; }
+.igc__tri { position: absolute; left: 921.3px; top: 1190.8px; width: 68.28px; height: 83.93px; color: var(--ig-accent); transform: rotate(-32.82deg); transform-origin: 50% 50%; pointer-events: none; }
+.igc[data-type="cardD"] .igc__tri { left: 934.3px; top: 1185.8px; }
+.igc[data-type^="cover"] .igc__arrow, .igc[data-type^="cover"] .igc__tri { color: var(--ig-ink); }
+
+/* облачко-стикер */
+.igc__cloud { position: absolute; width: 284px; height: 215px; filter: drop-shadow(-2px 1px 14px rgba(153,153,169,.3)); cursor: grab; }
+.igc__cloud svg { position: absolute; inset: 0; width: 100%; height: 100%; overflow: visible; }
+.igc__cloud span { position: absolute; left: 30px; right: 30px; top: 88px; text-align: center; font-weight: 700; font-size: 32px; line-height: 32px;
+  letter-spacing: -.03em; color: #121212; transform: rotate(4.74deg); white-space: nowrap; }
+
+/* стикеры */
+.igc__stk { position: absolute; transform-origin: 50% 50%; cursor: grab; }
+.igc__stk img { width: 100%; height: 100%; pointer-events: none; user-select: none; -webkit-user-drag: none; }
+
+/* зерно поверх всего, как в макете */
+.igc__grain { position: absolute; inset: 0; pointer-events: none; opacity: .09; mix-blend-mode: multiply; background-size: 256px 256px; }

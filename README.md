@@ -28,3 +28,4 @@ Settings → Pages → Build and deployment → Source: **Deploy from a branch**
 
 ## Новый шаблон
 Запись в `TEMPLATES` в скрипте `index.html` + свой CSS в `assets/` + блок полей `.tpanel[data-panel="…"]` в панели.
+- **Карусели** — `assets/igc.css` + `assets/igc.js`, обложки и карточки Instagram 1080×1340 одной серией. Четыре раскладки, темы «Зелёная», «Жёлтая», «Зимняя» + свои HEX, стикеры (`img/stickers/`) и свои PNG, облачко с текстом. Экспорт: PNG 1080×1340 и ZIP всей карусели.
